@@ -35,7 +35,7 @@ public static class Program
             }
             else
             {
-                eightPuzzle.AStar();
+                isSolved = eightPuzzle.AStar();
             }
 
             if (!doWhileNotSolved)

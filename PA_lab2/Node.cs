@@ -156,4 +156,28 @@ public class Node
 
         return isSolved;
     }
+    
+    public int ManhattanDistance(TreeNode potentialStep)
+    {
+        var distance = 0;
+        var puzzle = potentialStep.Node.State;
+
+        for (var i = 0; i < puzzle.Length; i++)
+        {
+            for (var j = 0; j < puzzle[i].Length; j++)
+            {
+                if (puzzle[i][j] != 0)
+                {
+                    var target = ((puzzle[i][j] - 1) / 3, (puzzle[i][j] - 1) % 3);
+                    distance += int.Abs(i - target.Item1) + int.Abs(j - target.Item2);
+                }
+                else
+                {
+                    distance += int.Abs(i - 2) + int.Abs(j - 2);
+                }
+            }
+        }
+
+        return distance + PathCost;
+    }
 }
