@@ -9,13 +9,21 @@ public static class Program
                       "2.A*\n" +
                       "Choice:");
         var choice = int.Parse(Console.ReadLine()!);
+        Console.Write("Must puzzle be solvable:");
+        var isSolvable = Console.ReadLine() == "yes";
         Console.Write("Do while not solved?:");
         var doWhileNotSolved = Console.ReadLine() == "yes";
-        var isSolved = false;
+        bool isSolved;
         
         do
         {
             var eightPuzzle = new EightPuzzle();
+
+            while (isSolvable && !EightPuzzle.IsSolvable(eightPuzzle.Table))
+            {
+                eightPuzzle = new EightPuzzle();
+            }
+            
             Console.Clear();
             Console.WriteLine("Here is your puzzle:");
             foreach (var row in eightPuzzle.Table)
@@ -29,19 +37,7 @@ public static class Program
                 Console.WriteLine();
             }
 
-            if (choice == 1)
-            {
-                isSolved = eightPuzzle.BreadthFirstSearch();
-            }
-            else
-            {
-                isSolved = eightPuzzle.AStar();
-            }
-
-            if (!doWhileNotSolved)
-            {
-                isSolved = true;
-            }
+            isSolved = (choice == 1 ? eightPuzzle.BreadthFirstSearch() : eightPuzzle.AStar()) || !doWhileNotSolved;
         } while (!isSolved);
     }
 }

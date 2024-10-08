@@ -136,8 +136,7 @@ public class EightPuzzle
         Stopwatch.Start();
         var priorityQueue = new PriorityQueue<TreeNode, int>();
         var currentLeaf = Nodes.Root;
-        var states = new List<int[][]>();
-        states.Add(currentLeaf.Node.State);
+        var states = new List<int[][]> { currentLeaf.Node.State };
         var isSolved = currentLeaf.Node.IsSolved();
 
         while (!isSolved)
@@ -248,5 +247,43 @@ public class EightPuzzle
         }
 
         return true;
+    }
+    
+    public static bool IsSolvable(int[][] puzzle)
+    {
+        var flatPuzzle = new int[9];
+        var index = 0;
+
+        foreach (var row in puzzle)
+        {
+            foreach (var number in row)
+            {
+                flatPuzzle[index++] = number;
+            }
+        }
+
+        var inversions = CountInversions(flatPuzzle);
+        return inversions % 2 == 0;
+    }
+
+    private static int CountInversions(int[] puzzle)
+    {
+        var inversions = 0;
+
+        for (var i = 0; i < puzzle.Length; i++)
+        {
+            if (puzzle[i] == 0) continue;
+
+            for (var j = i + 1; j < puzzle.Length; j++)
+            {
+                if (puzzle[j] == 0) continue; 
+                if (puzzle[i] > puzzle[j])
+                {
+                    inversions++;
+                }
+            }
+        }
+
+        return inversions;
     }
 }
