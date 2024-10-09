@@ -52,6 +52,7 @@ public class EightPuzzle
         var queue = new Queue<TreeNode>();
         var currentLeaf = Nodes.Root;
         var isSolved = currentLeaf.Node.IsSolved();
+        var iterations = 0;
 
         while (!isSolved)
         {
@@ -62,7 +63,8 @@ public class EightPuzzle
                 return false;
             }
 
-
+            iterations++;
+            
             var availableActions = currentLeaf.Node.GetActions();
             for (var i = 0; i < availableActions.Length; i++)
             {
@@ -127,7 +129,11 @@ public class EightPuzzle
         {
             Console.Write(node.Action + " ");
         }
-
+        Console.WriteLine($"\nTime elapsed: {Stopwatch.Elapsed.TotalMilliseconds}ms");
+        Console.WriteLine($"Iterations done: {iterations}");
+        Console.WriteLine($"Total nodes: {Nodes.Count}");
+        Console.WriteLine($"Nodes in memory: {Nodes.Count}");
+        Console.WriteLine("Dead ends: 0");
         return true;
     }
 
@@ -138,6 +144,9 @@ public class EightPuzzle
         var currentLeaf = Nodes.Root;
         var states = new List<int[][]> { currentLeaf.Node.State };
         var isSolved = currentLeaf.Node.IsSolved();
+        var iterations = 0;
+        var totalNodes = 1;
+        var deadEnds = 0;
 
         while (!isSolved)
         {
@@ -148,8 +157,10 @@ public class EightPuzzle
                 return false;
             }
 
+            iterations++;
 
             var availableActions = currentLeaf.Node.GetActions();
+            var isDeadEnd = true;
             for (var i = 0; i < availableActions.Length; i++)
             {
                 if (!availableActions[i]) continue;
@@ -163,12 +174,14 @@ public class EightPuzzle
                         if (!states.Contains(currentLeaf.Up.Node.State))
                         {
                             priorityQueue.Enqueue(currentLeaf.Up, currentLeaf.Node.ManhattanDistance(currentLeaf.Up));
+                            isDeadEnd = false;
                         }
                         else
                         {
                             currentLeaf.Up = null;
                             Nodes.Count--;
                         }
+                        totalNodes++;
                         break;
                     case 1:
                         action = "Right";
@@ -178,12 +191,14 @@ public class EightPuzzle
                         {
                             priorityQueue.Enqueue(currentLeaf.Right,
                                 currentLeaf.Node.ManhattanDistance(currentLeaf.Right));
+                            isDeadEnd = false;
                         }
                         else
                         {
                             currentLeaf.Right = null;
                             Nodes.Count--;
                         }
+                        totalNodes++;
                         break;
                     case 2:
                         action = "Down";
@@ -193,12 +208,14 @@ public class EightPuzzle
                         {
                             priorityQueue.Enqueue(currentLeaf.Down,
                                 currentLeaf.Node.ManhattanDistance(currentLeaf.Down));
+                            isDeadEnd = false;
                         }
                         else
                         {
                             currentLeaf.Down = null;
                             Nodes.Count--;
                         }
+                        totalNodes++;
                         break;
                     default:
                         action = "Left";
@@ -208,14 +225,21 @@ public class EightPuzzle
                         {
                             priorityQueue.Enqueue(currentLeaf.Left,
                                 currentLeaf.Node.ManhattanDistance(currentLeaf.Left));
+                            isDeadEnd = false;
                         }
                         else
                         {
                             currentLeaf.Left = null;
                             Nodes.Count--;
                         }
+                        totalNodes++;
                         break;
                 }
+            }
+
+            if (isDeadEnd)
+            {
+                deadEnds++;
             }
             
             currentLeaf = priorityQueue.Dequeue();
@@ -245,6 +269,11 @@ public class EightPuzzle
         {
             Console.Write(node.Action + " ");
         }
+        Console.WriteLine($"\nTime elapsed: {Stopwatch.Elapsed.TotalMilliseconds}ms");
+        Console.WriteLine($"Iterations done: {iterations}");
+        Console.WriteLine($"Total nodes: {totalNodes}");
+        Console.WriteLine($"Nodes in memory: {Nodes.Count}");
+        Console.WriteLine($"Dead ends: {deadEnds}");
 
         return true;
     }
